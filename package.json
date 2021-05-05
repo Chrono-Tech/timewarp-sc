@@ -1,0 +1,40 @@
+{
+  "name": "timewarp.sc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "bignumber.js": "^9.0.1",
+    "hardhat-tracer": "^1.0.0-alpha.3"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@types/chai": "^4.2.15",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^14.14.37",
+    "chai": "^4.3.4",
+    "chai-bignumber": "^3.0.0",
+    "ethereum-waffle": "3.3.0",
+    "ethers": "^5.1.4",
+    "hardhat": "2.1.2",
+    "hardhat-deploy": "^0.7.5",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
+  },
+  "scripts": {
+    "test": "npx hardhat test",
+    "test:base": "npx hardhat test ./test/base-test.ts",
+    "test:fee": "npx hardhat test ./test/deposit-fee-test.ts",
+    "test:locking-time": "npx hardhat test ./test/locking-time-test.ts",
+    "test:rewards": "npx hardhat test ./test/rewards-test.ts",
+    "test:diff-erc20": "npx hardhat test ./test/diff-erc20-test.ts",
+    "test:many-txs": "npx hardhat test ./test/many-txs-test.ts",
+    "compile": "npx hardhat compile",
+    "deploy:rinkeby": "hardhat --network rinkeby deploy",
+    "deploy:binance-testnet": "hardhat --network binance-testnet deploy",
+    "verify:binance-testnet": "hardhat --network binance-testnet etherscan-verify --api-key 1UQ8TV1A8ST5CHR9ZQHDENYCFRFZ9AWX11 --license MIT"
+  },
+  "author": "",
+  "license": "ISC"
+}
