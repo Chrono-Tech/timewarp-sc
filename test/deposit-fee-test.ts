@@ -17,7 +17,7 @@ chai.use(require('chai-bignumber')());
 
 const expect = chai.expect
 
-enum LockType { NULL, WITHOUT, DAYS30, DAYS180, DAYS365, DAYS730}
+enum LockType { NULL, HOURS1, DAYS30, DAYS180, DAYS365, DAYS730}
 
 let erc20Deposit = null
 let timeWarpPool = null
@@ -88,7 +88,7 @@ describe("Time Warp Deposit Fee Test", function () {
         erc20Deposit = erc20Deposit.connect(wallet2)
         timeWarpPool = timeWarpPool.connect(wallet2)
         await (await erc20Deposit.approve(timeWarpPool.address, MAX_APPROVE_AMOUNT)).wait()
-        await (await timeWarpPool.deposit(LockType.WITHOUT, ethToWei(1), false)).wait()
+        await (await timeWarpPool.deposit(LockType.HOURS1, ethToWei(1), false)).wait()
 
         erc20Deposit = erc20Deposit.connect(wallet3)
         timeWarpPool = timeWarpPool.connect(wallet3)
@@ -131,7 +131,7 @@ describe("Time Warp Deposit Fee Test", function () {
         erc20Deposit = erc20Deposit.connect(wallet2)
         timeWarpPool = timeWarpPool.connect(wallet2)
         await (await erc20Deposit.approve(timeWarpPool.address, MAX_APPROVE_AMOUNT)).wait()
-        await (await timeWarpPool.deposit(LockType.WITHOUT, ethToWei(1), false)).wait()
+        await (await timeWarpPool.deposit(LockType.HOURS1, ethToWei(1), false)).wait()
 
         erc20Deposit = erc20Deposit.connect(wallet3)
         timeWarpPool = timeWarpPool.connect(wallet3)

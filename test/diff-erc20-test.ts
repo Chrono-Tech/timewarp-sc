@@ -13,7 +13,7 @@ chai.use(solidity);
 
 const expect = chai.expect
 
-enum LockType { NULL, WITHOUT, DAYS30, DAYS180, DAYS365, DAYS730}
+enum LockType { NULL, HOURS1, DAYS30, DAYS180, DAYS365, DAYS730}
 
 let erc20Deposit = null
 let erc20Reward = null
@@ -80,7 +80,7 @@ describe("Time Warp Different Deposit and Reward ERC20 Test", function () {
         erc20Deposit = erc20Deposit.connect(wallet2)
         timeWarpPool = timeWarpPool.connect(wallet2)
         await (await erc20Deposit.approve(timeWarpPool.address, MAX_APPROVE_AMOUNT)).wait()
-        await (await timeWarpPool.deposit(LockType.WITHOUT, ethToWei(1), false)).wait()
+        await (await timeWarpPool.deposit(LockType.HOURS1, ethToWei(1), false)).wait()
 
         erc20Deposit = erc20Deposit.connect(wallet3)
         timeWarpPool = timeWarpPool.connect(wallet3)
@@ -113,7 +113,7 @@ describe("Time Warp Different Deposit and Reward ERC20 Test", function () {
         const balanceDepositBefore = await erc20Deposit.balanceOf(wallet2.address)
         const balanceRewardBefore = await erc20Reward.balanceOf(wallet2.address)
         timeWarpPool = timeWarpPool.connect(wallet2)
-        await (await timeWarpPool.deposit(LockType.WITHOUT, ethToWei(1), true)).wait()
+        await (await timeWarpPool.deposit(LockType.HOURS1, ethToWei(1), true)).wait()
         const balanceDepositAfter = await erc20Deposit.balanceOf(wallet2.address)
         const balanceRewardAfter = await erc20Reward.balanceOf(wallet2.address)
 

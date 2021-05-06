@@ -12,7 +12,7 @@ chai.use(solidity);
 
 const expect = chai.expect
 
-enum LockType { NULL, WITHOUT, DAYS30, DAYS180, DAYS365, DAYS730}
+enum LockType { NULL, HOURS1, DAYS30, DAYS180, DAYS365, DAYS730}
 
 let erc20Deposit = null
 let timeWarpPool = null
@@ -22,7 +22,7 @@ let wallet3 = null
 let wallet4 = null
 let walletStartAmount = ethToWei(20000000)
 
-describe("Time Warp Rewards And Many Harvests Test", function () {
+describe("Many TXS Test", function () {
 
     before("Before hook", async function () {
         const arr = await ethers.getSigners()
@@ -86,8 +86,6 @@ describe("Time Warp Rewards And Many Harvests Test", function () {
         }
 
         timeWarpPool = timeWarpPool.connect(wallet2)
-        const receipt = await timeWarpPool.deposit(LockType.DAYS365, ethToWei(1.33446), false)
-        const tx = await receipt.wait()
-        console.log('tx.gasUsed', tx.gasUsed.toString())
+        await (await timeWarpPool.deposit(LockType.DAYS365, ethToWei(1.33446), false)).wait()
     })
 });

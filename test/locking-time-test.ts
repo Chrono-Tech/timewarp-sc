@@ -13,7 +13,7 @@ chai.use(solidity);
 
 const expect = chai.expect
 
-enum LockType { NULL, WITHOUT, DAYS30, DAYS180, DAYS365, DAYS730}
+enum LockType { NULL, HOURS1, DAYS30, DAYS180, DAYS365, DAYS730}
 
 let erc20Deposit = null
 let timeWarpPool = null
@@ -112,4 +112,22 @@ describe("Time Warp Locking Time Tests", function () {
         timeWarpPool = timeWarpPool.connect(wallet3)
         await (await timeWarpPool.withdraw((await timeWarpPool.userStacked(wallet3.address)).toString())).wait()
     });
+
+    it("Wallet 3 Check 1 Hours lock", async function () {
+        timeWarpPool = timeWarpPool.connect(wallet1)
+        await (await timeWarpPool.setUnlockAll(false)).wait()
+
+        timeWarpPool = timeWarpPool.connect(wallet3)
+        erc20Deposit = erc20Deposit.connect(wallet3)
+
+        await (await erc20Deposit.approve(timeWarpPool.address, MAX_APPROVE_AMOUNT)).wait()
+
+        await (await timeWarpPool.deposit(LockType.HOURS1, ethToWei(1), false)).wait()
+        await expect(timeWarpPool.withdraw((await timeWarpPool.userStacked(wallet3.address)).toString())).to.be.revertedWith('Expiration time of the deposit is not over');
+
+        await network.provider.send("evm_increaseTime", [3600]) // Increase 30 days
+        timeWarpPool.withdraw((await timeWarpPool.userStacked(wallet3.address)).toString())
+    });
+
+
 });

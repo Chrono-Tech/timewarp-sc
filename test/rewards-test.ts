@@ -13,7 +13,7 @@ chai.use(solidity);
 
 const expect = chai.expect
 
-enum LockType { NULL, WITHOUT, DAYS30, DAYS180, DAYS365, DAYS730}
+enum LockType { NULL, HOURS1, DAYS30, DAYS180, DAYS365, DAYS730}
 
 let erc20Deposit = null
 let timeWarpPool = null
@@ -48,6 +48,7 @@ describe("Time Warp Rewards And Many Harvests Test", function () {
         await erc20Deposit.deployed()
 
         await (await timeWarpPool.init(erc20Deposit.address, erc20Deposit.address)).wait()
+        await (await timeWarpPool.setUnlockAll(true)).wait()
         await (await erc20Deposit.approve(timeWarpPool.address, MAX_APPROVE_AMOUNT)).wait()
     })
 
@@ -78,7 +79,7 @@ describe("Time Warp Rewards And Many Harvests Test", function () {
         await (await erc20Deposit.approve(timeWarpPool.address, MAX_APPROVE_AMOUNT)).wait()
 
         timeWarpPool = timeWarpPool.connect(wallet2)
-        await(await timeWarpPool.deposit(LockType.WITHOUT, ethToWei(1), false)).wait()
+        await(await timeWarpPool.deposit(LockType.HOURS1, ethToWei(1), false)).wait()
     });
 
     it("Reward Repeat 100", async function () {
@@ -99,7 +100,7 @@ describe("Time Warp Rewards And Many Harvests Test", function () {
         await receipt.wait()
         await expect(receipt)
             .to.emit(timeWarpPool, 'Harvest')
-            .withArgs(LockType.WITHOUT, ethToWei(100), 100);
+            .withArgs(LockType.HOURS1, ethToWei(100), 100);
         const balanceAfterHarvest = await erc20Deposit.balanceOf(wallet2.address)
         const {amount, lastRewardIndex} = await timeWarpPool.getReward(wallet2.address, 0)
         expect(amount).to.equal(0)
@@ -123,7 +124,7 @@ describe("Time Warp Rewards And Many Harvests Test", function () {
         const userLastReward = await timeWarpPool.userLastReward(wallet2.address)
         await expect(receipt)
             .to.emit(timeWarpPool, 'Harvest')
-            .withArgs(LockType.WITHOUT, ethToWei(100), userLastReward);
+            .withArgs(LockType.HOURS1, ethToWei(100), userLastReward);
         expect(userLastReward).to.equal(200)
         expect(balanceAfterHarvest).to.equal(BigNumber.from(balanceBeforeHarvest).add(ethToWei(100)))
     })
@@ -139,7 +140,7 @@ describe("Time Warp Rewards And Many Harvests Test", function () {
         timeWarpPool = timeWarpPool.connect(wallet2)
         await expect(timeWarpPool.withdraw((await timeWarpPool.userStacked(wallet2.address)).toString()))
             .to.be.revertedWith('We cannot get reward in one transaction');
-        await expect(timeWarpPool.deposit(LockType.WITHOUT, ethToWei(1), true))
+        await expect(timeWarpPool.deposit(LockType.HOURS1, ethToWei(1), true))
             .to.be.revertedWith('We cannot get reward in one transaction');
     })
 
@@ -153,7 +154,7 @@ describe("Time Warp Rewards And Many Harvests Test", function () {
         const userLastReward1 = await timeWarpPool.userLastReward(wallet2.address)
         await expect(receipt1)
             .to.emit(timeWarpPool, 'Harvest')
-            .withArgs(LockType.WITHOUT, ethToWei(100), userLastReward1);
+            .withArgs(LockType.HOURS1, ethToWei(100), userLastReward1);
         expect(balanceAfterHarvest1).to.equal(BigNumber.from(balanceBeforeHarvest1).add(ethToWei(100)))
 
         const balanceBeforeHarvest2 = await erc20Deposit.balanceOf(wallet2.address)
@@ -164,7 +165,7 @@ describe("Time Warp Rewards And Many Harvests Test", function () {
         // expect(await timeWarpPool.hasHarvest(wallet2.address)).to.equal(true)
         await expect(receipt2)
             .to.emit(timeWarpPool, 'Harvest')
-            .withArgs(LockType.WITHOUT, ethToWei(100), userLastReward2);
+            .withArgs(LockType.HOURS1, ethToWei(100), userLastReward2);
         expect(balanceAfterHarvest2).to.equal(BigNumber.from(balanceBeforeHarvest2).add(ethToWei(100)))
 
         const balanceBeforeHarvest3 = await erc20Deposit.balanceOf(wallet2.address)
@@ -175,7 +176,7 @@ describe("Time Warp Rewards And Many Harvests Test", function () {
         // expect(await timeWarpPool.hasHarvest(wallet2.address)).to.equal(false)
         await expect(receipt3)
             .to.emit(timeWarpPool, 'Harvest')
-            .withArgs(LockType.WITHOUT, ethToWei(3), userLastReward3);
+            .withArgs(LockType.HOURS1, ethToWei(3), userLastReward3);
         expect(balanceAfterHarvest3).to.equal(BigNumber.from(balanceBeforeHarvest3).add(ethToWei(3)))
 
         await expect(timeWarpPool.harvest())

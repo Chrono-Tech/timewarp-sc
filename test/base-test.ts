@@ -13,7 +13,7 @@ chai.use(solidity);
 
 const expect = chai.expect
 
-enum LockType { NULL, WITHOUT, DAYS30, DAYS180, DAYS365, DAYS730}
+enum LockType { NULL, HOURS1, DAYS30, DAYS180, DAYS365, DAYS730}
 
 const erc20DepositDecimals = 8
 let erc20Deposit = null
@@ -100,7 +100,7 @@ describe("Time Warp Base Tests", function () {
         erc20Deposit = await ERC20.deploy("Time Token", "TIME", erc20DepositDecimals)
         // console.log('erc20Deposit', erc20Deposit)
         const dep = await erc20Deposit.deployed()
-        console.log('dep', (await dep.deployTransaction.wait()).gasUsed.toString())
+        console.log('Deploy gas used', (await dep.deployTransaction.wait()).gasUsed.toString())
         await (await erc20Deposit.mint(wallet1.address, walletStartAmount)).wait()
         await (await erc20Deposit.mint(wallet2.address, walletStartAmount)).wait()
         await (await erc20Deposit.mint(wallet3.address, walletStartAmount)).wait()
@@ -121,7 +121,7 @@ describe("Time Warp Base Tests", function () {
         erc20Deposit = erc20Deposit.connect(wallet2)
         timeWarpPool = timeWarpPool.connect(wallet2)
         await (await erc20Deposit.approve(timeWarpPool.address, MAX_APPROVE_AMOUNT)).wait()
-        await (await timeWarpPool.deposit(LockType.WITHOUT, ethToWei(1, erc20DepositDecimals), false)).wait()
+        await (await timeWarpPool.deposit(LockType.HOURS1, ethToWei(1, erc20DepositDecimals), false)).wait()
 
         erc20Deposit = erc20Deposit.connect(wallet3)
         timeWarpPool = timeWarpPool.connect(wallet3)
@@ -221,7 +221,7 @@ describe("Time Warp Base Tests", function () {
         timeWarpPool = timeWarpPool.connect(wallet3)
         await (await timeWarpPool.deposit(LockType.DAYS30, ethToWei(1, erc20DepositDecimals), false)).wait()
         await (await timeWarpPool.withdraw((await timeWarpPool.userStacked(wallet3.address)).toString())).wait()
-        await (await timeWarpPool.deposit(LockType.WITHOUT, ethToWei(1, erc20DepositDecimals), false)).wait()
+        await (await timeWarpPool.deposit(LockType.HOURS1, ethToWei(1, erc20DepositDecimals), false)).wait()
     })
 
     it("Wallet 5 Deposit with increase locks, checks correct Harvest and Compound", async function () {
