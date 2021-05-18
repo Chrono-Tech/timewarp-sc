@@ -36,11 +36,11 @@ module.exports = {
         },
         rinkeby: {
             url: "https://rinkeby.infura.io/v3/901360f9b16940c0a0c7d7a323faed88",
-            accounts: ['0x4fdb8f894cc882f8a74a2c84fc9e8ac0a53b3a62ddb505ebb0c54a4135079b9d']
+            accounts: ['']
         },
         "binance-testnet": {
             url: "https://data-seed-prebsc-2-s1.binance.org:8545/",
-            accounts: ['0x4fdb8f894cc882f8a74a2c84fc9e8ac0a53b3a62ddb505ebb0c54a4135079b9d']
+            accounts: ['']
         }
     },
     mocha: {
